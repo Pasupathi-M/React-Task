@@ -5,8 +5,11 @@ import { Paper } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Button from "@mui/material/Button";
 import { AlertMessage } from "./alert-box";
+import { Link, useNavigate} from "react-router-dom"
 
 export const SignInForm = (props: any) => {
+
+  /********************************* Hooks */
 
   // Called only once 
   const [stateData, setState] = useState(() => {
@@ -27,32 +30,35 @@ export const SignInForm = (props: any) => {
       severity: 'warning'
     }
   })
+  const [enableRoute, routeSate] = useState({
+    enable: false,
+    path: '/todo-page/param'
+  });
+
+  // React router Hook navigation
+
+  const navigate = useNavigate();
+  /******************************************************************** */
 
   const loadRoles = require("../dev-data/roles.json").data;
 
   const handleChanges = (values: any, field: string, dropdownVal?: any) => {
-
-    const { value } = values.target;
-    if(field === 'username'){
-      setState((pre) => { return {...pre, userName:value}})
-
-    }else if(field === 'password'){
-        setState((pre) => { return {...pre, password: value}})
-    }else {
-        console.log("dropdownVal", dropdownVal)
-        setState(pre => { return {...pre, role: dropdownVal}})
+    if (alertData.isAlert) {
+      alertState((pre) => {
+        return { ...pre, isAlert: false };
+      });
     }
-
-    if(alertData.isAlert) {
-      alertState(pre => { return { ...pre, isAlert: false}})
-    }
-
-  }
+    console.log("dropdownVal", dropdownVal);
+    const { name } = dropdownVal ? { name: "role" } : values.target;
+    const { value } = dropdownVal ? { value: dropdownVal } : values.target;
+    setState((preValue) => {
+      return { ...preValue, [name]: value };
+    });
+  };
 
   const submitForm = () => {
     console.log("Form submitted...", stateData);
     if (!stateData.userName.trim()) {
-      console.log('Username')
       alertState(pre => { return {
         ...pre,
         isAlert: true,
@@ -60,7 +66,6 @@ export const SignInForm = (props: any) => {
       }})
       return
     } else if (!stateData.password.trim()) {
-      console.log('Password')
       alertState(pre => { return {
         ...pre,
         isAlert: true,
@@ -68,22 +73,26 @@ export const SignInForm = (props: any) => {
       }})
       return
     } else {
-      const display = JSON.stringify({
-        Username: stateData.userName,
-        Password: stateData.password,
-        Role: stateData.role.role,
-      });
-      alert(display);
+      // const display = JSON.stringify({
+      //   Username: stateData.userName,
+      //   Password: stateData.password,
+      //   Role: stateData.role.role,
+      // });
+      navigate("/todo-page", { state: stateData})
+      
     }
   }
   return (
-    <React.Fragment>
+    <>
       <div className="form-container">
       { alertData.isAlert && 
       <AlertMessage
         severity= {alertData.severity}
         alertMessage={alertData.alertMessage}
       /> }
+      {
+       enableRoute.enable && <Link to={ enableRoute.path }/> 
+      }
         <Paper elevation={5}>
           <div className="card--header">
             <h2> Sign-In </h2>
@@ -99,6 +108,7 @@ export const SignInForm = (props: any) => {
                   label="Username"
                   placeholder="username"
                   value={stateData.userName}
+                  name="userName"
                   onChange={(e) => {
                     handleChanges(e, "username");
                   }}
@@ -118,6 +128,7 @@ export const SignInForm = (props: any) => {
                   placeholder="password"
                   type="password"
                   value={stateData.password}
+                  name="password"
                   onChange={(e) => {
                     handleChanges(e, "password");
                   }}
@@ -166,7 +177,7 @@ export const SignInForm = (props: any) => {
           </form>
         </Paper>
       </div>
-    </React.Fragment>
+    </>
   );
   
 }
