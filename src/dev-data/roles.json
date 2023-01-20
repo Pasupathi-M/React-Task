@@ -1,0 +1,25 @@
+{
+    "data": [
+        {
+            "id": 1,
+            "role": "Admin"
+        },
+        {
+            "id": 2,
+            "role": "Manager"
+        },
+        {
+            "id": 3,
+            "role": "Assistant Manager"
+        },
+        {
+            "id": 4,
+            "role": "Accountant"
+        },
+        {
+            "id": 5,
+            "role": "Employee"
+        }
+
+    ]
+}
