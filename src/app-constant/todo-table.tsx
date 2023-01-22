@@ -1,7 +1,11 @@
-
-
 export const todoFiled = [
-    { field: 'seno' },
-    { field: 'todo' },
-    { field: 'action' }
-]
+  {
+    headeName: "S/No",
+    field: "seno",
+  },
+  {
+    headerName: "Todo",
+    field: "todo",
+    editable: true
+  }
+];

@@ -5,6 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 import { AgGridReact } from "ag-grid-react";
 import { render } from "react-dom";
@@ -20,19 +21,62 @@ export const Todo = (props: any) => {
   const data = useParams();
   const loc = useLocation();
 
-  const [todoUserData, todoSetSate] = useState({...loc.state});
+  const [todoUserData, todoSetSate] = useState({ ...loc.state });
+  const [deleteBtn, deleteBtnState] = useState(() => {
+    return {
+      frameworksComponents: <Button>Delete</Button>,
+    };
+  });
 
-//   const todoUserData = {
-//     userName: "Test user",
-//     role: { id: 1, role: "Admin" },
-//   };
+  //   const todoUserData = {
+  //     userName: "Test user",
+  //     role: { id: 1, role: "Admin" },
+  //   };
 
   const [todoListData, todoListState] = useState({
     todoName: "",
     todoArrayList: [],
   } as Record<string, any>);
 
+  const deleteActionButton = (prop: any) => {
+    return (
+      <>
+        <Button
+          onClick={() => {
+            removeTodo(prop.data);
+          }}
+        >
+          Delete
+        </Button>
+      </>
+    );
+  };
+
+  const [todoFileds, tableFieldSate] = useState(() => {
+    return [
+      ...todoFiled,
+      {
+        headerName: "Action",
+        cellRenderer: deleteActionButton,
+      },
+    ];
+  });
+
   /************************************************ */
+
+  function removeTodo({ seno }: any) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    todoListState((previousToDolist) => {
+      const newArray = previousToDolist.todoArrayList.filter(
+        (item: any, index: number) => item.seno != seno
+      );
+      newArray.map((ele: any, idx: number) => {
+        ele.seno = idx + 1;
+        return ele;
+      });
+      return { ...previousToDolist, todoArrayList: [...newArray] };
+    });
+  }
 
   const enterToDoValue = (filedValue: any) => {
     const { name } = filedValue.target;
@@ -40,19 +84,24 @@ export const Todo = (props: any) => {
     todoListState((pre: any) => {
       return { ...pre, [name]: value };
     });
-    console.log("enterToDoValue", value);
   };
 
   const updateTodoList = () => {
     if (todoListData.todoName.trim()) {
       todoListState((pre: any) => {
         const formObj = {
-          seno: todoListData.todoArrayList.length,
+          seno:
+            todoListData.todoArrayList.length === 0
+              ? 1
+              : todoListData.todoArrayList.length + 1,
           todo: todoListData.todoName,
-          action: "Action",
+          action: "action",
         };
-        todoListData.todoArrayList.push(formObj);
-        return { ...pre, todoArrayList: [...todoListData.todoArrayList] };
+        // todoListData.todoArrayList.push(formObj);
+        return {
+          ...pre,
+          todoArrayList: [...todoListData.todoArrayList, formObj],
+        };
       });
     }
   };
@@ -60,9 +109,11 @@ export const Todo = (props: any) => {
   return (
     <>
       <div className="card--container">
-        <Card sx={{
-            height: '100%'
-        }}>
+        <Card
+          sx={{
+            height: "100%",
+          }}
+        >
           <CardHeader title={todoUserData.userName}></CardHeader>
           <CardContent>
             <div className="card--content">
@@ -104,7 +155,8 @@ export const Todo = (props: any) => {
               >
                 <AgGridReact
                   rowData={todoListData.todoArrayList}
-                  columnDefs={todoFiled}
+                  columnDefs={todoFileds}
+                  // frameworkComponents={ deleteBtn.frameworksComponents }
                 ></AgGridReact>
               </div>
             </div>
