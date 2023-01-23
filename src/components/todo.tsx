@@ -5,7 +5,6 @@ import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-import ButtonGroup from "@mui/material/ButtonGroup";
 
 import { AgGridReact } from "ag-grid-react";
 import { render } from "react-dom";
@@ -18,15 +17,9 @@ import { todoFiled } from "../app-constant/todo-table";
 export const Todo = (props: any) => {
   /************************************** Hook */
 
-  const data = useParams();
   const loc = useLocation();
 
   const [todoUserData, todoSetSate] = useState({ ...loc.state });
-  const [deleteBtn, deleteBtnState] = useState(() => {
-    return {
-      frameworksComponents: <Button>Delete</Button>,
-    };
-  });
 
   //   const todoUserData = {
   //     userName: "Test user",
@@ -65,6 +58,7 @@ export const Todo = (props: any) => {
   /************************************************ */
 
   function removeTodo({ seno }: any) {
+
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     todoListState((previousToDolist) => {
       const newArray = previousToDolist.todoArrayList.filter(
