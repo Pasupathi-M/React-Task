@@ -1,14 +1,15 @@
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState } from "react";
+
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 
-import { AgGridReact } from "ag-grid-react";
-import { render } from "react-dom";
+import { Form, Field, Formik } from 'formik'
 
+import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
@@ -20,11 +21,6 @@ export const Todo = (props: any) => {
   const loc = useLocation();
 
   const [todoUserData, todoSetSate] = useState({ ...loc.state });
-
-  //   const todoUserData = {
-  //     userName: "Test user",
-  //     role: { id: 1, role: "Admin" },
-  //   };
 
   const [todoListData, todoListState] = useState({
     todoName: "",
@@ -39,7 +35,7 @@ export const Todo = (props: any) => {
             removeTodo(prop.data);
           }}
         >
-          Delete
+          DELETE
         </Button>
       </>
     );

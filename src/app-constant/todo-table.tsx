@@ -1,6 +1,6 @@
 export const todoFiled = [
   {
-    headeName: "S/No",
+    headerName: "S/No",
     field: "seno",
   },
   {

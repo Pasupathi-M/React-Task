@@ -20,6 +20,11 @@ body {
     height: auto;
     width: 25%;
     font-weight: 500;
+    margin-top: 10%;
+}
+
+.form__container {
+    padding: 10px;
 }
 
 .signin-formgroup {

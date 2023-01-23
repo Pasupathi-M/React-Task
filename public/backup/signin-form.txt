@@ -1,0 +1,68 @@
+ // console.log("Form submitted...", stateData);
+    // if (!stateData.userName.trim()) {
+    //   alertState((pre) => {
+    //     return {
+    //       ...pre,
+    //       isAlert: true,
+    //       alertMessage: "Please enter username",
+    //     };
+    //   });
+    //   return;
+    // } else if (!stateData.password.trim()) {
+    //   alertState((pre) => {
+    //     return {
+    //       ...pre,
+    //       isAlert: true,
+    //       alertMessage: "Please enter password",
+    //     };
+    //   });
+    //   return;
+    // } else {
+      // navigate("/todo-page", { state: stateData });
+    // }
+
+     {/* {alertData.isAlert && (
+          <AlertMessage
+            severity={alertData.severity}
+            alertMessage={alertData.alertMessage}
+          />
+        )} */}
+
+
+      // const handleChanges = (values: any, field: string, dropdownVal?: any) => {
+  //   if (alertData.isAlert) {
+  //     alertState((pre) => {
+  //       return { ...pre, isAlert: false };
+  //     });
+  //   }
+  //   console.log("dropdownVal", dropdownVal);
+  //   const { name } = dropdownVal ? { name: "role" } : values.target;
+  //   const { value } = dropdownVal ? { value: dropdownVal } : values.target;
+  //   setState((preValue) => {
+  //     return { ...preValue, [name]: value };
+  //   });
+  // };
+  
+
+    const autoCompleteField = ({textFieldProps, ...props}: any) => {
+    const { error, helperText, ...field } = fieldToTextField(props)
+    const { name } = field;
+    const { setFieldValue } = props
+    return (
+      <Autocomplete
+        {...props}
+        {...field}
+        onChange={(_, value)=> {setFieldValue(name, value) }}
+        getOptionSelected={(item: any, current: any)=> item.value === current.value}
+        getOptionLabel={(option: any) => option.role}
+        renderInput={(props: any) => (
+          <TextField
+            {...props}
+            {...textFieldProps}
+            helperText={helperText}
+            error={error}
+          />
+        )}
+      ></Autocomplete>
+    );
+  }
