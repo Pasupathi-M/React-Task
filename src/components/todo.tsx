@@ -16,6 +16,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { todoFiled } from "../app-constant/todo-table";
 
 export const Todo = (props: any) => {
+
   /************************************** Hook */
 
   const loc = useLocation();
@@ -27,7 +28,29 @@ export const Todo = (props: any) => {
     todoArrayList: [],
   } as Record<string, any>);
 
-  const deleteActionButton = (prop: any) => {
+
+  const [todoFileds, tableFieldSate] = useState(() => {
+    return [
+      ...todoFiled,
+      {
+        headerName: "Action",
+        cellRenderer: actionButtons,
+      },
+    ];
+  });
+
+  const [updateCondition, setStateUpdateCondition] = useState(() => {
+    return {
+      updateId: null,
+      flag: false,
+    };
+  });
+
+  /************************************************ */
+
+    // Ag grid button renderer
+
+  function actionButtons(prop: any) {
     return (
       <>
         <Button
@@ -37,22 +60,69 @@ export const Todo = (props: any) => {
         >
           DELETE
         </Button>
+        <Button
+        onClick={()=> {
+          updateTodo(prop.data)
+        }}>
+          UPDATE
+        </Button>
       </>
     );
   };
 
-  const [todoFileds, tableFieldSate] = useState(() => {
-    return [
-      ...todoFiled,
-      {
-        headerName: "Action",
-        cellRenderer: deleteActionButton,
-      },
-    ];
-  });
+  const inputTodoValue = (filedValue: any) => {
+    const { name } = filedValue.target;
+    const { value } = filedValue.target;
+    todoListState((pre: any) => {
+      return { ...pre, [name]: value };
+    });
+  };
 
-  /************************************************ */
+  const addAndUpdateTodoList = () => {
 
+    if (todoListData.todoName.trim()) {
+      todoListState((pre: any) => {
+        if (!updateCondition.flag) {
+          const formObj = {} as Record<any, any>;
+          formObj.seno =
+            todoListData.todoArrayList.length === 0
+              ? 1
+              : todoListData.todoArrayList.length + 1;
+          formObj.todo = todoListData.todoName;
+          formObj.action = "action";
+          todoListData.todoArrayList.push(formObj);
+        } else {
+          const findData = pre.todoArrayList.find(
+            (item: any) => item.seno === updateCondition.updateId
+          );
+          console.log("find data", findData)
+          findData.todo = todoListData.todoName;
+          setStateUpdateCondition((preState) => {
+            return { ...preState, flag: false };
+          });
+        }
+        return {
+          ...pre,
+          todoArrayList: [...todoListData.todoArrayList],
+        };
+      });
+    }
+    setStateUpdateCondition((preState) => {
+      return { ...preState, flag: false };
+    });
+  };
+
+  // Update todo list
+  function updateTodo(newData: any) {
+    todoListState((previousTodoList)=> {
+      return { ...previousTodoList, todoName: newData.todo }
+    })
+    setStateUpdateCondition((preState) => {
+      return { ...preState, flag: true, updateId: newData.seno };
+    });
+  }
+
+  // Remove todo list 
   function removeTodo({ seno }: any) {
 
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -68,40 +138,12 @@ export const Todo = (props: any) => {
     });
   }
 
-  const enterToDoValue = (filedValue: any) => {
-    const { name } = filedValue.target;
-    const { value } = filedValue.target;
-    todoListState((pre: any) => {
-      return { ...pre, [name]: value };
-    });
-  };
-
-  const updateTodoList = () => {
-    if (todoListData.todoName.trim()) {
-      todoListState((pre: any) => {
-        const formObj = {
-          seno:
-            todoListData.todoArrayList.length === 0
-              ? 1
-              : todoListData.todoArrayList.length + 1,
-          todo: todoListData.todoName,
-          action: "action",
-        };
-        // todoListData.todoArrayList.push(formObj);
-        return {
-          ...pre,
-          todoArrayList: [...todoListData.todoArrayList, formObj],
-        };
-      });
-    }
-  };
-
   return (
     <>
       <div className="card--container">
         <Card
           sx={{
-            height: "100%",
+            height: "100%"
           }}
         >
           <CardHeader title={todoUserData.userName}></CardHeader>
@@ -120,7 +162,7 @@ export const Todo = (props: any) => {
                       width: "100%",
                     }}
                     onChange={(e) => {
-                      enterToDoValue(e);
+                      inputTodoValue(e);
                     }}
                   />
                 </div>
@@ -132,10 +174,10 @@ export const Todo = (props: any) => {
                       height: "61%",
                     }}
                     onClick={() => {
-                      updateTodoList();
+                      addAndUpdateTodoList();
                     }}
                   >
-                    Add
+                    { updateCondition.flag ? 'Update' : 'Add' }
                   </Button>
                 </div>
               </div>
@@ -146,7 +188,6 @@ export const Todo = (props: any) => {
                 <AgGridReact
                   rowData={todoListData.todoArrayList}
                   columnDefs={todoFileds}
-                  // frameworkComponents={ deleteBtn.frameworksComponents }
                 ></AgGridReact>
               </div>
             </div>

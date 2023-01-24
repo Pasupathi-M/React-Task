@@ -5,7 +5,6 @@ export const todoFiled = [
   },
   {
     headerName: "Todo",
-    field: "todo",
-    editable: true
+    field: "todoName"
   }
 ];

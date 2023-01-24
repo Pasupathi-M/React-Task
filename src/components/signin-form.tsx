@@ -33,7 +33,7 @@ export const SignInForm = (props: any) => {
       isAlert: false,
       alertMessage: "",
       severity: "warning",
-    };
+    }; 
   });
   // const [enableRoute, routeSate] = useState({
   //   enable: false,
@@ -57,7 +57,7 @@ export const SignInForm = (props: any) => {
   ) => {
     console.log("Values", values);
     formik.resetForm()
-    navigate('/todo-page', {state: values})
+    navigate('/todo-page-v2', {state: values})
 
    
   };

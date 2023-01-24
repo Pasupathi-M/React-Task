@@ -17,6 +17,10 @@ function App() {
     {
       path: 'todo-page',
       element: <AppComponent.Todo />
+    },
+    {
+      path: 'todo-page-v2',
+      element: <AppComponent.TodoWithApi />
     }
   ]);
   return (
