@@ -56,10 +56,16 @@ export const TodoWithApi = (props: any) => {
   });
 
   const getTodoList = async () => {
-    const todoList = await Axios.getApi("/todo-list");
-    setStateTodoList((pre: any) => {
-      return { ...pre, data: [...todoList.data] };
-    });
+    try{
+
+      const todoList = await Axios.getApi("/list-todo");
+      setStateTodoList((pre: any) => {
+        return { ...pre, data: [...todoList.data.resData] };
+      });
+
+    }catch(e){
+      console.log("Error", e)
+    }
   };
 
   useEffect(() => {
@@ -71,16 +77,21 @@ export const TodoWithApi = (props: any) => {
 
   // Ag grid button renderer
   const editTodo = ({ data }: any) => {
-    console.log('Edit', data)
     setInputState((pre)=> { return { ...pre, todoName: data.todoName, isEdit: true, id: data.id }})
   }
 
   const deleteTodo = async ({ data }: any) => {
-    const resData = await Axios.deleteApi(`/delete-todo/${data.id}`)
-    if(resData.status === 200) {
-      setStateAction(pre => { return { ...pre, type: 'Delete'}})
+    try {
+      const resData = await Axios.deleteApi(`/delete-todo/${data.id}`);
+      if (resData.data.status) {
+        setStateAction((pre) => {
+          return { ...pre, type: "Delete" };
+        });
+      }
+    } catch (e) {
+      console.log("Error", e);
     }
-  }
+  };
 
   function actionButtons(elementProp: any) {
     return (
@@ -104,19 +115,31 @@ export const TodoWithApi = (props: any) => {
   }
 
   const addAndUpdateTodoList = async () => {
-    if(inputValue.todoName) {
-      if(!inputValue.isEdit){
-        const resData = await Axios.createApi('/add-todo', { todoName: inputValue.todoName })
-        console.log("add functionality", resData)
-        if(resData.status === 200) {
-          setStateAction(pre => { return { ...pre, type: 'Add'}})
-        }
-      }else {
-        const resData = await Axios.updateApi(`/update-todo/${inputValue.id}`,{ todoName: inputValue.todoName })
-        if(resData.status === 200) {
-          setStateAction(pre => { return { ...pre, type: 'Update'}})
+    try {
+      if (inputValue.todoName) {
+        if (!inputValue.isEdit) {
+          const resData = await Axios.createApi("/add-todo", {
+            todoName: inputValue.todoName,
+          });
+          if (resData.data.status) {
+            setStateAction((pre) => {
+              return { ...pre, type: "Add" };
+            });
+          }
+        } else {
+          const resData = await Axios.updateApi(
+            `/update-todo/${inputValue.id}`,
+            { todoName: inputValue.todoName }
+          );
+          if (resData.data.status) {
+            setStateAction((pre) => {
+              return { ...pre, type: "Update" };
+            });
+          }
         }
       }
+    } catch (e) {
+      console.log("Error", e);
     }
   };
 
