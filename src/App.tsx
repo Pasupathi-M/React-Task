@@ -10,7 +10,11 @@ import "./css/todo.css"
 function App() {
   const routes = createBrowserRouter([
     {
-      path: "/",
+      path: '/',
+      element: <AppComponent.SignUpForm />
+    },
+    {
+      path: "/signup",
       element: <AppComponent.SignInForm />,
       // Children   -> Only for rendering child routes time
     },
