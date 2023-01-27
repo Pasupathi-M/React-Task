@@ -1,0 +1,51 @@
+body {
+    margin: 0;
+    padding: 0;
+
+}
+
+.signin-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.signin-formgroup {
+    width: 100%;
+}
+
+.form-container {
+    /* background: blue; */
+    height: auto;
+    width: 25%;
+    font-weight: 500;
+    margin-top: 10%;
+}
+
+.form__container {
+    padding: 10px;
+}
+
+.signin-formgroup {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 15px;
+}
+
+.signin {
+    margin: 10px;
+    min-width: 300px;
+    max-width: 100%;
+}
+
+.card--header {
+    margin: 10px;
+}
+
+hr {
+    height: 5px;
+    background: rgba(245, 245, 245, 0.678);
+    border: none
+}
+
