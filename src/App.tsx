@@ -11,11 +11,11 @@ function App() {
   const routes = createBrowserRouter([
     {
       path: '/',
-      element: <AppComponent.SignUpForm />
+      element: <AppComponent.SignInForm />
     },
     {
       path: "/signup",
-      element: <AppComponent.SignInForm />,
+      element: <AppComponent.SignUpForm />,
       // Children   -> Only for rendering child routes time
     },
     {
