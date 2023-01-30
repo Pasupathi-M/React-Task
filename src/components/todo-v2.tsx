@@ -1,10 +1,10 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo } from "react";
 
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
-import { TextField } from "@mui/material";
+import { TextField, Grid, Box } from "@mui/material";
 import Button from "@mui/material/Button";
 
 import { Form, Field, Formik } from "formik";
@@ -16,10 +16,13 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { todoFiled } from "../app-constant/todo-table";
 
 import * as Axios from "../services/rest-api";
+import * as LocalStorage from "../common-services/localstorage"
+
 
 export const TodoWithApi = (props: any) => {
   /************************************** Hook */
-
+  
+  const navigate = useNavigate();
   const loc = useLocation();
 
   const [todoUserData, todoSetSate] = useState({ ...loc.state });
@@ -43,6 +46,12 @@ export const TodoWithApi = (props: any) => {
       },
     ];
   }, []);
+
+  if(!todoUserData.userName) {
+    LocalStorage.remove('access-token')
+    navigate('/')
+    
+  }
 
   const [todoList, setStateTodoList] = useState(() => {
     return {
@@ -151,57 +160,79 @@ export const TodoWithApi = (props: any) => {
             height: "100%",
           }}
         >
-          <CardHeader title={todoUserData.userName}></CardHeader>
-          <CardContent>
-            <div className="card--content">
-              <div className="todo--container">
-                <div className="field--area todo--content__header">
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Todo"
-                    placeholder="Enter task"
-                    name="todoName"
-                    value={inputValue.todoName}
-                    sx={{
-                      width: "100%",
-                    }}
-                    onChange={(e) => {
-                      setInputState((previousValue: any) => {
-                        return {
-                          ...previousValue,
-                          [e.target.name]: e.target.value,
-                        };
-                      });
-                    }}
-                  />
-                </div>
-                <div className="btn--area todo--content__header">
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      width: "100%",
-                      height: "61%",
-                    }}
-                    onClick={() => {
-                      addAndUpdateTodoList();
-                    }}
+          <Grid container>
+            <Grid container item xs={12}>
+              <Grid item xs={8}>
+              <CardHeader title={todoUserData.userName}></CardHeader>
+              </Grid>
+              <Grid item xs={4}>
+                <Box component="div" style={{
+                  display: "flex",
+                  height: "100%",
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}>
+              <Button variant="text" onClick={()=> {
+                LocalStorage.clean()
+                navigate('/')
+              }}>Signout</Button>
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid item xs={12}>
+              <CardContent>
+                <div className="card--content">
+                  <div className="todo--container">
+                    <div className="field--area todo--content__header">
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Todo"
+                        placeholder="Enter task"
+                        name="todoName"
+                        value={inputValue.todoName}
+                        sx={{
+                          width: "100%",
+                        }}
+                        onChange={(e) => {
+                          setInputState((previousValue: any) => {
+                            return {
+                              ...previousValue,
+                              [e.target.name]: e.target.value,
+                            };
+                          });
+                        }}
+                      />
+                    </div>
+                    <div className="btn--area todo--content__header">
+                      <Button
+                        variant="outlined"
+                        sx={{
+                          width: "100%",
+                          height: "61%",
+                        }}
+                        onClick={() => {
+                          addAndUpdateTodoList();
+                        }}
+                      >
+                        {inputValue.isEdit ? "UPDATE" : "ADD"}
+                      </Button>
+                    </div>
+                  </div>
+                  <div
+                    className="table--container ag-theme-alpine"
+                    style={{ height: 200 }}
                   >
-                    { inputValue.isEdit ? 'UPDATE' : 'ADD'}
-                  </Button>
+                    <AgGridReact
+                      rowData={todoList.data}
+                      columnDefs={columnDefs}
+                    ></AgGridReact>
+                  </div>
                 </div>
-              </div>
-              <div
-                className="table--container ag-theme-alpine"
-                style={{ height: 200 }}
-              >
-                <AgGridReact
-                  rowData={todoList.data}
-                  columnDefs={columnDefs}
-                ></AgGridReact>
-              </div>
-            </div>
-          </CardContent>
+              </CardContent>
+            </Grid>
+          </Grid>
         </Card>
       </div>
     </>

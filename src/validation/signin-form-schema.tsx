@@ -13,6 +13,6 @@ export const signUpFormValidationSchema = Yup.object().shape({
 
 
 export const signInFormValidationSchema = Yup.object().shape({
-    email: Yup.string().min(1).required('Please enter email'),
+    email: Yup.string().email('Invalid email').min(1).required('Please enter email'),
     password: Yup.string().min(6).max(20).required('Please enter password')
 })

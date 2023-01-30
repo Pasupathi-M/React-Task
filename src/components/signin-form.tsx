@@ -10,13 +10,14 @@ import { Formik, Form, Field } from "formik";
 import * as Axios from "../services/rest-api";
 import * as schemaValiadtion from "../validation/signin-form-schema";
 import * as LocalStorage from "../common-services/localstorage"
+import { AlertMessage } from "./alert-box"
 
 export const SignInForm = (props: any) => {
   const [initData, setSate] = useState({
     email: "",
     password: "",
   });
-
+  const [alert, alertState] = useState({flag: false, message: ''})
   useEffect(() => {
     // Axios.getApi()
   });
@@ -33,6 +34,8 @@ export const SignInForm = (props: any) => {
         navigate('/todo-page-v2', {
           state: { ...resData.data } 
         })
+      }else {
+        alertState(pre => ({ ...pre, flag: true, message: resData.data.message}))
       }
     }catch(e) {
       console.log(e)
@@ -42,6 +45,11 @@ export const SignInForm = (props: any) => {
 
   return (
     <>
+      {/* {true ? (
+        <AlertMessage severity="error" alertMessage={"Dummy message"} />
+      ) : (
+        ""
+      )} */}
       <div className="form-container">
         <div className="card--header">
           <h2> Sign-In </h2>

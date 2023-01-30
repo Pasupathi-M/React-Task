@@ -15,3 +15,4 @@ export const remove = (keyString: string) => {
 export const clean = () => {
     localStorage.clear()
 }
+    
